@@ -20,7 +20,7 @@ class autonomous(AutonomousStateMachine):
     def do_something(self, state_tm):
         """This happens second"""
         
-        speed = math.sin(2*math.pi*(1/self.time)*state_tm)
+        speed = (math.sin(2*math.pi*(1/self.time)*state_tm))/4
         """First integer is # of times to run through program, second is time. combined creates value."""
         print('{}  {}'.format(state_tm, speed))
         self.driveTrain.setTank(speed, speed)
