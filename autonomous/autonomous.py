@@ -13,9 +13,13 @@ class autonomous(AutonomousStateMachine):
     drive_speed = tunable(-1)
 
         
-
-
-    @timed_state(duration=2, next_state="do_something", first=True)
+    @state(first = True, must_finish = True)
+    def shoot(self):
+        self.next_state = "dont_do_something"
+    """shooter logic"""
+    """Shooting could go here if no limelight PID"""
+    
+    @timed_state(duration=1, next_state="drive")
     def dont_do_something(self):
         """This happens first"""
         print("dont do something")
@@ -23,10 +27,10 @@ class autonomous(AutonomousStateMachine):
         
 
     @timed_state(duration=time, next_state = "stop")
-    def do_something(self, state_tm):
+    def drive(self, state_tm):
         """This happens second"""
         
-        speed = -(math.sin(0.25 * math.pi * (1 / self.time) * state_tm))*.25
+        speed = (math.sin(0.25 * math.pi * (1 / self.time) * state_tm))*.25
         """First integer is # of times to run through program, second is time. combined creates value."""
         print('{}  {}'.format(state_tm, speed))
         self.driveTrain.setTank(speed, speed)
@@ -35,27 +39,5 @@ class autonomous(AutonomousStateMachine):
     def stop(self):
         self.driveTrain.setTank(0, 0)
         print("stop")
-        self.next_state("turn")
-    
-    @state(must_finish = True)
-    def turn(self):
-        pass
-        """
-        if limelight value = limelight PID value when detecting reflective tape:
-            self.driveTrain.setTank(0, 0)
-            self.next_state("get_to_position")
-        else:
-            self.driveTrain.setTank(.25, -.25)
-        
-    @state(must_finish = True)
-    def get_to_position(self):
-        if distace = the distance we can get 100% accuracy from:
-            self.driveTrain.setTank(0,0)
-            self.next_state("shoot")
-        else:
-            self.driveTrain.setTank
-    
-    @timed_state(duration = 3)
-    def shoot(self):
-        shooter code
-    """
+
+    """shooting w/ limelight would go here"""
