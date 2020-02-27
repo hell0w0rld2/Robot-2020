@@ -1,7 +1,7 @@
 from magicbot import AutonomousStateMachine, tunable, timed_state, state
 import math
 from components.driveTrain import DriveTrain
-
+from components.ShooterLogic import ShooterLogic
 class autonomous(AutonomousStateMachine):
     """Creates the autonomous code"""
     """DO NOT USE IN PRODUCTION THIS WILL BE DELETED """
@@ -9,36 +9,31 @@ class autonomous(AutonomousStateMachine):
     MODE_NAME = "Two Steps"
     DEFAULT = True
     driveTrain: DriveTrain
-
+    shooter: ShooterLogic
     drive_speed = tunable(-1)
 
-    """    
-    @state(first = True, must_finish = True)
-    def shoot(self):
-        print("shoot")
-        self.next_state = "dont_do_something"
-    shooter logic
-    Shooting could go here if no limelight PID"""
-    
-    @timed_state(duration=1, next_state="drive", first = True)
-    def dont_do_something(self):
-        """This happens first"""
-        print("dont do something")
-        self.driveTrain.setTank(0, 0)
         
+    @state(first = True, must_finish = True)
+    def engage_shooter(self):
+        self.shooter.engage()
+        print("engaged")
+        self.next_state("shooter_wait")
+
+    @state(must_finish = True)
+    def shooter_wait(self, state_tm):
+        if self.shooter.done() or state_tm > 8:
+            self.next_state("drive")
 
     @timed_state(duration=time, next_state = "stop")
     def drive(self, state_tm):
         """This happens second"""
         
-        speed = (math.sin(0.25 * math.pi * (1 / self.time) * state_tm))*.25
+        speed = .25
         """First integer is # of times to run through program, second is time. combined creates value."""
-        print('{}  {}'.format(state_tm, speed))
         self.driveTrain.setTank(speed, speed)
 
     @timed_state(duration = 0.5)
     def stop(self):
         self.driveTrain.setTank(0, 0)
-        print("stop")
 
     """shooting w/ limelight would go here"""
