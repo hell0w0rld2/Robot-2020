@@ -12,14 +12,15 @@ class autonomous(AutonomousStateMachine):
 
     drive_speed = tunable(-1)
 
-        
+    """    
     @state(first = True, must_finish = True)
     def shoot(self):
+        print("shoot")
         self.next_state = "dont_do_something"
-    """shooter logic"""
-    """Shooting could go here if no limelight PID"""
+    shooter logic
+    Shooting could go here if no limelight PID"""
     
-    @timed_state(duration=1, next_state="drive")
+    @timed_state(duration=1, next_state="drive", first = True)
     def dont_do_something(self):
         """This happens first"""
         print("dont do something")
@@ -35,7 +36,7 @@ class autonomous(AutonomousStateMachine):
         print('{}  {}'.format(state_tm, speed))
         self.driveTrain.setTank(speed, speed)
 
-    @state(must_finish = True)
+    @timed_state(duration = 0.5)
     def stop(self):
         self.driveTrain.setTank(0, 0)
         print("stop")

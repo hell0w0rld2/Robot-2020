@@ -58,6 +58,7 @@ class MyRobot(MagicRobot):
         testComponentCompatibility(self, ButtonManager)
         testComponentCompatibility(self, Pneumatics)
         testComponentCompatibility(self, Elevator)
+        testComponentCompatibility(self, ScorpionLoader)
         
 
     def teleopInit(self):
